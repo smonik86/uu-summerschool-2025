@@ -9,7 +9,7 @@ To try out Lean and to follow the content of the first day, you don't need a loc
 you can use the [online Lean editor](https://live.lean-lang.org/).
 
 We will also play the [Natural Number Game](https://adam.math.hhu.de/#/g/leanprover-community/nng4) on the
-first day to lean the basics of Lean.
+first day to learn the basics of Lean.
 
 ## Local installation
 
