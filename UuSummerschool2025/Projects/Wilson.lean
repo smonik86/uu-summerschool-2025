@@ -41,8 +41,8 @@ expanding the "All Messages" tab in your infoview.
 /-
 Above we have evaluated `(n-1)!` for the first `13` natural numbers. It seems to have different
 behaviour on primes and composite numbers! Let's start with the prime case and take `p` to be a
-prime number.Below is a statement saying that `(p - 1)! = sorry`. Fill in this sorry value with
-a conjectured value for `(p - 1)!` based on the above empirical evidence.
+prime number. Below is a statement saying that `(p - 1)! = sorry`. Uncomment this line and fill
+in this sorry value with a conjectured value for `(p - 1)!` based on the above empirical evidence.
 
 The `by plausible` will then check if your conjecture is plausible by generating many more examples
 just like above and checking if they give the expected result based on your conjecture.
@@ -50,7 +50,7 @@ just like above and checking if they give the expected result based on your conj
 
 variable {p : ℕ} [Fact p.Prime]
 
-lemma wilson_test : ((p - 1)! : ZMod p) = sorry := by plausible
+--lemma wilson_test : ((p - 1)! : ZMod p) = sorry := by plausible
 
 
 
