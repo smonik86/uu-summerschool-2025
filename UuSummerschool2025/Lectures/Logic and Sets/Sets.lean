@@ -45,11 +45,12 @@ lemma Set.mem_iff (x : α) (s : Set α) : x ∈ s ↔ s x := sorry
 /-
 The following gives an error when uncommented. This is because
 even though `Set α` and `α → Prop` are the same under the hood,
-lean wants you to use the `Set α` notation in order for the
+lean wants you to have something of type `Set α` in order for the
 `∈` notation to work.
 -/
 
 --example (x : α) (s : α → Prop) : x ∈ s ↔ s x := Iff.rfl
+
 
 /-
 When defining new data structures, we often write "extensionality"
@@ -157,8 +158,9 @@ example (h : s ⊆ t) : s ∩ u ⊆ t ∩ u :=
 
 example (h : s ⊆ t) : s ∩ u ⊆ t ∩ u :=
   /-
-  This must exist somewhere in the library, we can also
-  solve this problem by trying to find this lemma.
+  This must exist somewhere in the library, so we can also
+  solve this problem by trying to find this lemma using
+  tools like `rw?`, `exact?`, `apply?`, `loogle` or `leansearch`.
   -/
   sorry
 

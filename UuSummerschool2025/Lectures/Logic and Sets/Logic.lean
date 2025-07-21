@@ -11,6 +11,32 @@ how to work with sets and functions.
 -/
 
 section
+
+/-!
+# Prop
+
+Throughout this talk we'll see a lot of statements of the form `p : Prop`, so we
+should say something about what this means.
+
+`p : Prop` just means that `p` is a type with either zero or one inhabitants. The
+inhabitants should be interpreted as proofs of the proposition encoded by `p`.
+
+This makes for quite a convenient encoding of logic since, as we'll see, we can encode
+the usual logical operations in terms of operations like functions and products.
+
+Below are some examples of elements of `Prop`:
+-/
+
+example (p : Prop) : Prop := p → p
+
+/-
+Note that a proposition does not need to be true to be well typed! It just means that we
+cannot construct an inhabitnt of this type (i.e. a proof of this proposition).
+-/
+example : Prop := ∀ n : ℕ, 2*n = n
+
+example (s : ℕ → ℝ) (L : ℝ) : Prop := ∀ ε > 0, ∃ N : ℕ, ∀ n > N, |s n - L| < ε
+
 /-!
 ## Logical connectives, some examples
 
@@ -21,6 +47,10 @@ let's discuss *implication*.
 
 
 /-! ### Implications
+An implication `p → q` is encoded by a function from `p` to `q`, the idea being that
+one can view such an implication as a machine which turns a proof of `p` into a proof
+of `q`.
+
 To write the symbol `→`, use `\to`.
 
 Relevant tactics:
@@ -31,14 +61,26 @@ When in hypothesis: `have` or `specialize`
 
 example (p : Prop) : p → p := sorry
 
-
 example (p q : Prop) : p → (q → p) := sorry
-
 
 example (p q r : Prop) : (p → q) → ((p → (q → r)) → (p → r)) := sorry
 
+/-
+Note that the above work did not really rely at all on the types in question being
+propositions, and we could have just as easily given similar definitions for more
+general types (i.e. types which may have more than one inhabitant).
+-/
+
+example {α : Type*} : α → α := sorry
+
+example (α β : Type*) : α → (β → α) := sorry
+
+example (α β γ : Type*) : (α → β) → ((α → (β → γ)) → (α → γ)) := sorry
+
 
 /-! ### Universal quantification
+Forall statements are also encoded by functions, but where the codomain may depend on the bound variable.
+Practially speaking, this means that dealing with foralls is very similar to dealing with implications.
 
 To write the `∀` symbol, use `\forall`
 
@@ -55,6 +97,8 @@ example (α : Type) (p q : α → Prop) (h : ∀ x, p x → q x) :
 
 
 /-! ### Existential quantifier
+A proof of an existential statemtent `∃ x, p x` is a pair of an *example* `x` and
+a proof that `p x` holds.
 
 To write the `∃` symbol, use `\exists`
 
@@ -73,8 +117,10 @@ example (f : ℕ → ℕ)
     ∀ m, ∃ n, m ≤ 2 * f n := sorry
 
 
-
 /-! ### Conjunctions
+
+To prove a conjunction `a ∧ b`, we need to provide a proof of `a` and a
+proof of `b`.
 
 To write the `∧` symbol, use `\and`
 
@@ -93,6 +139,7 @@ example (p q : Prop) : p → q → p ∧ q := sorry
 example (p q : Prop) : p ∧ q → q ∧ p := sorry
 
 /-! ### Disjunctions
+To prove a disjunction `a ∨ b`, we need to either prove `a` or `b`.
 
 To write the `∨` sumbol, use `\or`
 
@@ -110,6 +157,8 @@ example (p q : Prop) : p ∨ q → q ∨ p := sorry
 
 /-! ### Iffs
 
+To prove an iff statement `p ↔ q`, we need to prove `p → q` and `q → p`.
+
 To write the `↔` symbol, use `\iff`
 
 Relevant tactics:
@@ -125,6 +174,8 @@ If `h : p ↔ q` then `h.mp : p → q` and `h.mpr : q → p`
 example (p q : Prop) : (p ↔ q) ↔ (p → q) ∧ (q → p) := sorry
 
 /-! ### Negation
+`¬ p` is actually *defined* in lean to be `p → False`. So we can just work with
+it like any other implication.
 
 To write the `¬` symbol, use `\not`
 
@@ -133,13 +184,10 @@ Relevant tactics:
 When in goal: `intro`
 When in hypothesis: `apply` (if goal is `False`), `have`
 
-Note:
-`contrapose!` and `push_neg` are useful for manipulating negations too.
 -/
 
 /-
-`¬ p` is actually *defined* in lean to be `p → False`. So we can just work with
-it like any other implication.
+Here is an example showing `¬ p` and `p → False` really give the same thing.
 -/
 example (p : Prop) : ¬ p ↔ (p → False) := Iff.rfl
 
@@ -147,18 +195,20 @@ example (p q : Prop) (h : p → q) : ¬ q → ¬ p := sorry
 
 
 /-
-From `False` we can derive anything.
+From `False` we can derive anything, and we have a few different methods for showing this.
 -/
 example (p q : Prop) (hp : p) (hpq : ¬ p) : q := by
   exact absurd hp hpq
   -- or contradiction
   -- or exact (hpq hp).elim
 
+/-
+Note: `contrapose!` and `push_neg` are useful for manipulating negations too.
+-/
 
 example (p : Prop) (hp : ¬ ¬ p) : p := by
   push_neg at hp
   exact hp
-
 
 example (p q : Prop) (h : ¬ p → ¬ q) : q → p := by
   contrapose
