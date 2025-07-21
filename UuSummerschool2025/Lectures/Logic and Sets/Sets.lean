@@ -27,10 +27,11 @@ def setOf (p : α → Prop) : Set α := p
 Given a set `s : Set α` and a `x : α`, `Set.mem s x` is proposition
 that `x` is an element of `s`.
  -/
-def Set.mem (s : Set α) (x : α) : Prop := sorry
+def Set.mem (s : Set α) (x : α) : Prop := s x
 
 /-- Enable `∈` notation. -/
-instance : Membership α (Set α) := sorry
+instance : Membership α (Set α) where
+  mem := Set.mem
 
 
 
@@ -39,6 +40,7 @@ This says that Set.mem is really just the proposition that the set is
 defined to be
 -/
 lemma Set.mem_iff (x : α) (s : Set α) : x ∈ s ↔ s x := sorry
+
 
 
 
@@ -148,12 +150,13 @@ example (h : s ⊆ t) : s ∩ u ⊆ t ∩ u := sorry
   -/
 
 
-example (h : s ⊆ t) : s ∩ u ⊆ t ∩ u :=
+example (h : s ⊆ t) : s ∩ u ⊆ t ∩ u := sorry
   /-
   In fact, we do not need to explicitly unfold the definitions here,
-  we can just use intro directly here.
+  we can just use intro directly here, and we can even use a fun constructor
+  called *rintro*, which allows us to pattern match on elements we're introducing.
   -/
-  sorry
+
 
 
 example (h : s ⊆ t) : s ∩ u ⊆ t ∩ u :=
@@ -164,9 +167,15 @@ example (h : s ⊆ t) : s ∩ u ⊆ t ∩ u :=
   -/
   sorry
 
-example : s ∪ t = t ∪ s := by
-  ext x
-  rw[mem_union, mem_union, Or.comm]
+/-
+To prove set theoretic statements using logic, it often helps to turn them
+into statements about *membership*, for which our `ext` lemma we proved before
+can be helpful.
+
+The `ext` tactics applies relevant `ext` lemmas in the given context. We can then
+prove this statement using only `mem_union` and `Or.comm`.
+-/
+example : s ∪ t = t ∪ s := sorry
 
 
 /-! ## Functions -/
@@ -190,15 +199,31 @@ example (s : Set β) : f ⁻¹' s = {x | f x ∈ s} := rfl
 #check Set.image
 example (s : Set α) : f '' s = {y | ∃ x, x ∈ s ∧ f x = y} := rfl
 
+
+/-
+The following lemmas are quite useful when working with images and
+preimages
+-/
 #check Set.mem_preimage
--- Can do `rw [Set.preimage]`
 
 #check Set.mem_image
--- Can do `rw [Set.image]`
 
-example (u v : Set β) : f ⁻¹' (u ∪ v) = f ⁻¹' u ∪ f ⁻¹' v := by
-  unfold preimage
-  rw [@union_def]
-  rw [← setOf_or]
-  ext a
-  rw[mem_setOf, mem_setOf, mem_setOf]
+/-
+Here is a simple statement about preimages of sets. To give a sense of how
+much more powerful lean's `rfl` tactic is than its counterpart in the natural
+numbers game, we note that this lemma can actually be proven by `rfl`.
+
+To make this slightly more interesting, let's try and prove this just using the
+following limited set of lemmas:
+
+`union_def`
+`setOf_or`
+`mem_setOf`
+`mem_union`
+`Set.mem_preimage`
+
+We're also allowed to use tactics like `rw`, `apply`, `unfold`, `ext` and so on
+(but no simp!)
+-/
+
+example (u v : Set β) : f ⁻¹' (u ∪ v) = f ⁻¹' u ∪ f ⁻¹' v := sorry

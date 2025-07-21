@@ -107,7 +107,14 @@ example : s ⊆ f ⁻¹' (f '' s) := sorry
 
 example : f '' s ⊆ v ↔ s ⊆ f ⁻¹' v := sorry
 
-example (h : Injective f) : f ⁻¹' (f '' s) ⊆ s := sorry
+/-
+We have not yet seen injective (or surjective) functions. Control click (or command click
+on mac) on `Injective` to jump to the definition.
+
+Note that these are both defined as forall statements, so we can use `specialize` and
+`intro` on them directly without even unfolding them.
+-/
+example (h : Injective f) : f ⁻¹' (f '' s) ⊆ s := by sorry
 
 example : f '' (f ⁻¹' u) ⊆ u := sorry
 

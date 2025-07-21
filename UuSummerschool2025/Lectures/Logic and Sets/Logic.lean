@@ -27,6 +27,11 @@ the usual logical operations in terms of operations like functions and products.
 Below are some examples of elements of `Prop`:
 -/
 
+/-
+This encodes the following fact the following fact:
+
+Given an arbitrary proposition `p`, `p` implies `p`.
+-/
 example (p : Prop) : Prop := p → p
 
 /-
@@ -63,7 +68,7 @@ example (p : Prop) : p → p := sorry
 
 example (p q : Prop) : p → (q → p) := sorry
 
-example (p q r : Prop) : (p → q) → ((p → (q → r)) → (p → r)) := sorry
+example (p q r : Prop) : (p → q) → ((p → (q → r)) → (p → r)) := by sorry
 
 /-
 Note that the above work did not really rely at all on the types in question being
@@ -79,8 +84,10 @@ example (α β γ : Type*) : (α → β) → ((α → (β → γ)) → (α → �
 
 
 /-! ### Universal quantification
-Forall statements are also encoded by functions, but where the codomain may depend on the bound variable.
-Practially speaking, this means that dealing with foralls is very similar to dealing with implications.
+Forall statements are also encoded by functions, but where the
+codomain may depend on the bound variable.
+Practially speaking, this means that dealing with foralls is
+very similar to dealing with implications.
 
 To write the `∀` symbol, use `\forall`
 
@@ -96,8 +103,10 @@ example (α : Type) (p q : α → Prop) (h : ∀ x, p x → q x) :
     (∀ x, p x) → ∀ x', q x' := sorry
 
 
+
 /-! ### Existential quantifier
-A proof of an existential statemtent `∃ x, p x` is a pair of an *example* `x` and
+A proof of an existential statemtent `∃ x, p x`
+is a pair of an *example* `x` and
 a proof that `p x` holds.
 
 To write the `∃` symbol, use `\exists`
@@ -119,8 +128,9 @@ example (f : ℕ → ℕ)
 
 /-! ### Conjunctions
 
-To prove a conjunction `a ∧ b`, we need to provide a proof of `a` and a
-proof of `b`.
+To prove a conjunction `a ∧ b`,
+we need to provide a proof of `a`
+and a proof of `b`.
 
 To write the `∧` symbol, use `\and`
 
@@ -139,7 +149,8 @@ example (p q : Prop) : p → q → p ∧ q := sorry
 example (p q : Prop) : p ∧ q → q ∧ p := sorry
 
 /-! ### Disjunctions
-To prove a disjunction `a ∨ b`, we need to either prove `a` or `b`.
+To prove a disjunction `a ∨ b`,
+we need to either prove `a` or `b`.
 
 To write the `∨` sumbol, use `\or`
 
@@ -172,6 +183,7 @@ If `h : p ↔ q` then `h.mp : p → q` and `h.mpr : q → p`
 -/
 
 example (p q : Prop) : (p ↔ q) ↔ (p → q) ∧ (q → p) := sorry
+
 
 /-! ### Negation
 `¬ p` is actually *defined* in lean to be `p → False`. So we can just work with
