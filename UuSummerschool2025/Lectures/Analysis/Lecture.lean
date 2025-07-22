@@ -146,6 +146,85 @@ example {a b x c d : ℝ} (h1 : a + 1 ≤ b + 1) (h2 : c + 2 ≤ d + 2) :
 
 end Inequalities
 
+section CaseSplitting
+
+example (x y : ℝ) : x < |y| → x < y ∨ x < -y := by
+  -- a new usage of the `obtain` tactic: We case split on an `or` statement.
+  obtain (h|h) := le_or_gt 0 y
+  -- step through this proof to observe.
+  · rw [abs_of_nonneg h]
+    intro h
+    -- We want to show an `∨` statement, by showing the left case is true.
+    left
+    exact h
+  · rw [abs_of_neg h]
+    intro h
+    -- We want to show an `∨` statement, by showing the right case is true.
+    right
+    exact h
+
+end CaseSplitting
+
+section Casting
+
+/- Sometimes a Lean statement can fool the reader. Is the following true? -/
+example (n : ℕ) : n - 1 + 1 = n := by
+  sorry
+
+/- It is false! This is because this uses subtraction in the natural numbers and there
+`0 - 1 = 0`! -/
+example : ∃ (n : ℕ), n - 1 + 1 ≠ n := by
+  use 0
+  simp
+
+/- What we might mean instead is: -/
+example (n : ℕ) : ((n : ℝ) - 1) + 1 = n := by
+  simp
+
+/-
+What happens when we have `n : ℕ` and write `(n : ℝ)`?
+Lean knows how to convert a natural number to a real number, this is called *casting*.
+-/
+example (n : ℕ) : ℝ := n
+
+/- Casts can be very annoying to deal with! -/
+example (n : ℕ) (hn : 1 ≤ n) :
+    Real.sin (n.choose 2) = Real.sin (n * (n - 1) / 2) := by
+  by_cases h : n = 0
+  · subst h
+    simp
+  · congr
+    rw [Nat.choose_two_right]
+    rw [Nat.cast_div]
+    · rw [Nat.cast_mul, Nat.cast_two]
+      rw [Nat.cast_sub, Nat.cast_one]
+      apply hn
+    · rw [← even_iff_two_dvd]
+      apply Nat.even_mul_pred_self n
+    · simp
+
+/-
+Division by `0` is allowed in Lean. Why?
+
+When we write `/`, we don't want to always pass a proof that the denominator is non-zero.
+Instead, we allow division by zero and provide a "junk value". In this case,
+we arbitrarily chose `1 / 0 = 0`.
+
+Of course, division does not satisfy the property `x * 1 / x = 1` for every `x`, but only
+for whenever `x ≠ 0`. Hence, many theorems will have non-zero assumptions, but this does not
+stop us from having a definition of `1 / 0`.
+-/
+example : 1 / 0 = 0 := rfl
+
+example : ∃ (x : ℝ), x * (1 / x) ≠ 1 := by
+  use 0
+  simp
+
+example (x : ℝ) (hx : 0 ≠ x) : x * (1 / x) = 1 := by
+  apply mul_one_div_cancel hx.symm
+
+end Casting
+
 section Sequences
 
 /- A sequence of real numbers is a function `ℕ → ℝ`. -/
@@ -297,63 +376,3 @@ lemma ConvergesTo.mul {a b : ℕ → ℝ} {x y : ℝ} (ha : ConvergesTo a x)
     exact le_of_max_le_right hn
 
 end Sequences
-
-section Casting
-
-/- Sometimes a Lean statement can fool the reader. Is the following true? -/
-example (n : ℕ) : n - 1 + 1 = n := by
-  sorry
-
-/- It is false! This is because this uses subtraction in the natural numbers and there
-`0 - 1 = 0`! -/
-example : ∃ (n : ℕ), n - 1 + 1 ≠ n := by
-  use 0
-  simp
-
-/- What we might mean instead is: -/
-example (n : ℕ) : ((n : ℝ) - 1) + 1 = n := by
-  simp
-
-/-
-What happens when we have `n : ℕ` and write `(n : ℝ)`?
-Lean knows how to convert a natural number to a real number, this is called *casting*.
--/
-example (n : ℕ) : ℝ := n
-
-/- Casts can be very annoying to deal with! -/
-example (n : ℕ) (hn : 1 ≤ n) :
-    Real.sin (n.choose 2) = Real.sin (n * (n - 1) / 2) := by
-  by_cases h : n = 0
-  · subst h
-    simp
-  · congr
-    rw [Nat.choose_two_right]
-    rw [Nat.cast_div]
-    · push_cast
-      rw [Nat.cast_sub, Nat.cast_one]
-      apply hn
-    · rw [← even_iff_two_dvd]
-      apply Nat.even_mul_pred_self n
-    · simp
-
-/-
-Division by `0` is allowed in Lean. Why?
-
-When we write `/`, we don't want to always pass a proof that the denominator is non-zero.
-Instead, we allow division by zero and provide a "junk value". In this case,
-we arbitrarily chose `1 / 0 = 0`.
-
-Of course, division does not satisfy the property `x * 1 / x = 1` for every `x`, but only
-for whenever `x ≠ 0`. Hence, many theorems will have non-zero assumptions, but this does not
-stop us from having a definition of `1 / 0`.
--/
-example : 1 / 0 = 0 := rfl
-
-example : ∃ (x : ℝ), x * (1 / x) ≠ 1 := by
-  use 0
-  simp
-
-example (x : ℝ) (hx : 0 ≠ x) : x * (1 / x) = 1 := by
-  apply mul_one_div_cancel hx.symm
-
-end Casting
