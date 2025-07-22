@@ -39,7 +39,7 @@ instance : Membership α (Set α) where
 This says that Set.mem is really just the proposition that the set is
 defined to be
 -/
-lemma Set.mem_iff (x : α) (s : Set α) : x ∈ s ↔ s x := sorry
+lemma Set.mem_iff (x : α) (s : Set α) : x ∈ s ↔ s x := Iff.rfl
 
 
 
@@ -71,7 +71,17 @@ which says that two sets are equal iff they have the same elements.
 #check funext
 #check propext
 
-lemma Set.ext (s t : Set α) : s = t ↔ ∀ x, x ∈ s ↔ x ∈ t := sorry
+lemma Set.ext (s t : Set α) : s = t ↔ ∀ x, x ∈ s ↔ x ∈ t := by
+  constructor
+  · intro st
+    intro x
+    rw[st]
+  · intro h
+    funext a
+    specialize h a
+    have := propext h
+    exact this
+
 
 /-
 We can make our own notation using the *notation* keyword. Here,
@@ -90,28 +100,30 @@ Write the following common set operations using our set builder notation:
 -/
 
 /-- s ∪ t -/
-def Set.union (s t : Set α) : Set α := sorry
+def Set.union (s t : Set α) : Set α := my{(x : α) | x ∈ s ∨ x ∈ t}
 
 /-- s ∩ t -/
-def Set.inter (s t : Set α) : Set α := sorry
+def Set.inter (s t : Set α) : Set α := my{x | x ∈ s ∧ x ∈ t}
 
 /-- s \ t -/
-def Set.diff (s t : Set α) : Set α := sorry
+def Set.diff (s t : Set α) : Set α := my{x | x ∈ s ∧ ¬ (x ∈ t)}
 
 /-- sᶜ -/
-def Set.compl (s : Set α) : Set α := sorry
+def Set.compl (s : Set α) : Set α := my{x | ¬ (x ∈ s)}
 
 /-- s ⊆ t -/
 def Set.IsSubset (s t : Set α) : Prop := ∀ x, x ∈ s → x ∈ t
 
 /-- ∅ -/
-def Set.empty : Set α := sorry
+def Set.empty : Set α := my{_ | False}
 
 /-- Set.univ : Set α should be α regarded as a set -/
-def Set.univ : Set α := sorry
+def Set.univ : Set α := my{_ | True}
 
 lemma Set.mem_setOf (p : α → Prop) (x : α) :
-  x ∈ my{x' | p x'} ↔ p x := sorry
+  x ∈ my{x' | p x'} ↔ p x := by
+  rw[Set.mem_iff]
+  rfl
 
 lemma Set.mem_union (s t : Set α) (x : α) :
     x ∈ Set.union s t ↔ x ∈ s ∨ x ∈ t := sorry
@@ -225,5 +237,10 @@ following limited set of lemmas:
 We're also allowed to use tactics like `rw`, `apply`, `unfold`, `ext` and so on
 (but no simp!)
 -/
-
-example (u v : Set β) : f ⁻¹' (u ∪ v) = f ⁻¹' u ∪ f ⁻¹' v := sorry
+example (u v : Set α) : f '' (u ∪ v) = f '' u ∪ f '' v := by sorry
+example (u v : Set β) : f ⁻¹' (u ∪ v) = f ⁻¹' u ∪ f ⁻¹' v := by
+  ext a
+  rw[mem_preimage]
+  rw[mem_union, mem_union]
+  rw[mem_preimage]
+  rw[mem_preimage]
