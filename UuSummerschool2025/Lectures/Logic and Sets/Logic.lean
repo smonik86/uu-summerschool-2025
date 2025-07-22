@@ -64,11 +64,25 @@ When in goal: `intro`/`intros`
 When in hypothesis: `have` or `specialize`
 -/
 
-example (p : Prop) : p → p := sorry
+example (p : Prop) : p → p := fun a ↦ a /-by
+  intro hp
+  exact hp-/
 
-example (p q : Prop) : p → (q → p) := sorry
 
-example (p q r : Prop) : (p → q) → ((p → (q → r)) → (p → r)) := by sorry
+lemma ex (p q : Prop) : p → (q → p) := by
+  intro hp hq
+  exact hp
+
+#print ex
+
+
+example (p q r : Prop) : (p → q) → ((p → (q → r)) → (p → r)) := by
+  intro pq pqr hp
+  have hq : q := pq hp
+  --specialize pq hp
+  specialize pqr hp hq
+  assumption
+
 
 /-
 Note that the above work did not really rely at all on the types in question being
@@ -76,9 +90,11 @@ propositions, and we could have just as easily given similar definitions for mor
 general types (i.e. types which may have more than one inhabitant).
 -/
 
-example {α : Type*} : α → α := sorry
+example {α : Type*} : α → α := by
+  intro a
+  exact a
 
-example (α β : Type*) : α → (β → α) := sorry
+example (α β : Type*) : α → (β → α) := fun a _ ↦ a
 
 example (α β γ : Type*) : (α → β) → ((α → (β → γ)) → (α → γ)) := sorry
 
@@ -97,10 +113,19 @@ The same tactics used in implications are relevant here.
 /-
 This is just another way of writing our first example
 -/
-example : ∀ p : Prop, p → p := sorry
+example : ∀ p : Prop, p → p := by
+  intro p hp
+  exact hp
+
 
 example (α : Type) (p q : α → Prop) (h : ∀ x, p x → q x) :
-    (∀ x, p x) → ∀ x', q x' := sorry
+    (∀ x, p x) → ∀ x', q x' := by
+  intro hp
+  intro x'
+  specialize hp x'
+  specialize h x' hp
+  assumption
+
 
 
 
@@ -117,13 +142,22 @@ When in goal: `use`
 When in hypothesis: `obtain`
 -/
 
-example : ∃ n : ℕ, n < n + 1 := sorry
+example : ∃ n : ℕ, n < n + 1 := by
+  use 0
+  omega
+
+example : ∃ n : ℕ, n < n + 1 := ⟨0, by omega⟩
 
 example : ∃ n : ℕ, n = n := sorry
 
-example (f : ℕ → ℕ)
+lemma ex2 (f : ℕ → ℕ)
     (hf : ∀ m, ∃ n, m ≤ f n) :
-    ∀ m, ∃ n, m ≤ 2 * f n := sorry
+    ∀ m, ∃ n, m ≤ 2 * f n := by
+  intro m
+  specialize hf m
+  obtain ⟨n, hn⟩ := hf
+  use n
+  omega
 
 
 /-! ### Conjunctions
@@ -143,10 +177,21 @@ If `h : p ∧ q` then `h.1 : p` and `h.2 : q`.
 We can also say `h.left` or `h.right`
 -/
 
-example (p q : Prop) : p → q → p ∧ q := sorry
+example (p q : Prop) : p → q → p ∧ q := by
+  intro hp hq
+  constructor
+  · exact hp
+  · assumption
 
 
-example (p q : Prop) : p ∧ q → q ∧ p := sorry
+
+example (p q : Prop) : p ∧ q → q ∧ p := by
+  --intro pq
+  --obtain ⟨hp, hq⟩ := pq
+  rintro ⟨hp, hq⟩
+  constructor
+  · exact hq
+  · exact hp
 
 /-! ### Disjunctions
 To prove a disjunction `a ∨ b`,
@@ -160,10 +205,19 @@ When in goal: `left`/`right`
 When in hypothesis: `obtain`
 -/
 
-example (p q : Prop) : p → p ∨ q := sorry
+example (p q : Prop) : p → p ∨ q := by
+  intro hp
+  left
+  exact hp
 
 
-example (p q : Prop) : p ∨ q → q ∨ p := sorry
+example (p q : Prop) : p ∨ q → q ∨ p := by
+  intro pq
+  obtain h | h := pq
+  · right
+    assumption
+  · left
+    assumption
 
 
 /-! ### Iffs
@@ -182,7 +236,19 @@ can rewrite with `↔` statements.
 If `h : p ↔ q` then `h.mp : p → q` and `h.mpr : q → p`
 -/
 
-example (p q : Prop) : (p ↔ q) ↔ (p → q) ∧ (q → p) := sorry
+example (p q : Prop) : (p ↔ q) ↔ (p → q) ∧ (q → p) := by
+  constructor
+  · intro pq
+    rw[pq]
+    constructor
+    · intro hq
+      exact hq
+    · intro hq
+      exact hq
+  · intro h
+    constructor
+    · exact h.left
+    · exact h.right
 
 
 /-! ### Negation
@@ -203,7 +269,11 @@ Here is an example showing `¬ p` and `p → False` really give the same thing.
 -/
 example (p : Prop) : ¬ p ↔ (p → False) := Iff.rfl
 
-example (p q : Prop) (h : p → q) : ¬ q → ¬ p := sorry
+example (p q : Prop) (h : p → q) : ¬ q → ¬ p := by
+  intro nq
+  intro hp
+  specialize h hp
+  exact nq h
 
 
 /-
