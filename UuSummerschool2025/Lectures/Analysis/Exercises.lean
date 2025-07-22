@@ -16,6 +16,7 @@ example : ∃ (x : ℝ), x + 37 = 42 := by
 
 -- Try to prove this only using `rw`, possibly useful lemmas:
 -- `pow_two`, `mul_sub`, `add_mul`, `add_sub`, `sub_sub`, `add_zero`
+-- Then rewrite the proof using `calc`.
 example (a b : ℝ) : (a + b) * (a - b) = a ^ 2 - b ^ 2 := by
   sorry
 
@@ -50,24 +51,18 @@ lemma eq_zero_of_forall_abs_lt {x : ℝ} (h : ∀ ε > 0, |x| < ε) : x = 0 := b
   by_contra h
   sorry
 
+-- Hint: `gcongr`
+example {a b c d : ℝ} (h : b ≤ d) :
+    |a| * b + c * 2 ≤ c * 2 + |a| * d := by
+  sorry
+
+example {a b c d : ℝ} (h : b ≤ d) (hc : 1 ≤ c + 1) :
+    b * |a| + 2 * c ≤ c * 4 + |a| * d := by
+  sorry
+
 section CaseSplitting
 
-example (x y : ℝ) : x < |y| → x < y ∨ x < -y := by
-  -- a new usage of the `obtain` tactic: We case split on an `or` statement.
-  obtain (h|h) := le_or_gt 0 y
-  -- step through this proof to observe.
-  · rw [abs_of_nonneg h]
-    intro h
-    -- We want to show an `∨` statement, by showing the left case is true.
-    left
-    exact h
-  · rw [abs_of_neg h]
-    intro h
-    -- We want to show an `∨` statement, by showing the right case is true.
-    right
-    exact h
-
--- Hint: use `eq_zero_or_eq_zero_of_mul_eq_zero` and `obtain` as above to distinguish
+-- Hint: use `eq_zero_or_eq_zero_of_mul_eq_zero` and `obtain` to distinguish
 -- cases.
 example {x : ℝ} (h : x ^ 2 = 1) : x = 1 ∨ x = -1 := by
   sorry
@@ -84,6 +79,27 @@ example (x y : ℝ) : |x| < y ↔ -y < x ∧ x < y := by
   sorry
 
 end CaseSplitting
+
+section Casting
+
+/-
+Which of the sides is true? Your proof *must* start with `left` or `right`.
+Hint: Use `simp` to simplify logical statements.
+-/
+example : (∀ n, (n / 2) * 2 = n) ∨ ¬ (∀ n, (n / 2) * 2 = n) := by
+  sorry
+
+/-
+Which of the sides is true? Your proof *must* start with `left` or `right`.
+-/
+example : (∀ n : ℕ, ((n / 2 : ℕ) : ℝ) = (n : ℝ) / (2 : ℝ)) ∨
+    ¬ (∀ n : ℕ, ((n / 2 : ℕ) : ℝ) = (n : ℝ) / (2 : ℝ)) := by
+  sorry
+
+example (n : ℕ) (hn : n ≠ 0) : Real.sin ((2 * n / n : ℕ)) = Real.sin 2 := by
+  sorry
+
+end Casting
 
 section Convergence
 
