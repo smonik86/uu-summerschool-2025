@@ -256,18 +256,6 @@ theorem fermat_little {h : a ≠ 0} : (a^(p - 1) : ZMod p) = 1 := by sorry
 
 
 def B (n : ℕ) (x y : ℕ) := (x + y)^n
-theorem binomial_theorem_nat (x y : ℕ) :
-  ∀ n : ℕ, (x + y)^n = ∑ k in range (n + 1), Nat.choose n k * x^k * y^(n - k)
-|
+theorem binomial_theorem_nat (x y : ℕ) :  ∀ n : ℕ, (x + y)^n = ∑ k in range (n + 1), Nat.choose n k * x^k * y^(n - k)
   | zero =>
     -- base case: n = 0
-
-
-
-
-def B : ℕ → ℕ → ℕ
-   example (n : Nat) (h : n ≤ 0) : n = 0 := by
-     induction n with
-     | zero =>
-       -- Base case: n = 0
-       exact rfl  -- `rfl` proves `n = n`
