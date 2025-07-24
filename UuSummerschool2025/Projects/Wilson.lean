@@ -107,15 +107,18 @@ Hint: loogle is your friend here! We've chosen to represent this statement with 
 thing for a reason...
 -/
 lemma factorial_is_prod : ((p - 1)! : ZMod p) = ∏ x ∈ Ico 1 (succ (p - 1)), (x : ZMod p) := by
-  sorry
+simp [← Finset.prod_Ico_id_eq_factorial]
 
-/--
+
+/-
+
 In step 2, we say that our product is the same as taking the product over all those elements of
 (ZMod p) with an inverse with respect to multiplication.
 -/
 lemma prod_to_units : ∏ x ∈ Ico 1 (succ (p - 1)), (x : ZMod p) = ∏ x : (ZMod p)ˣ, (x : ZMod p) :=
 
-  sorry
+
+
 
 /--
 In this step, we split the our product into the product of those elements which are their own
@@ -248,3 +251,23 @@ expected to be a bit tricky!
 -/
 
 theorem fermat_little {h : a ≠ 0} : (a^(p - 1) : ZMod p) = 1 := by sorry
+
+
+
+
+def B (n : ℕ) (x y : ℕ) := (x + y)^n
+theorem binomial_theorem_nat (x y : ℕ) :
+  ∀ n : ℕ, (x + y)^n = ∑ k in range (n + 1), Nat.choose n k * x^k * y^(n - k)
+|
+  | zero =>
+    -- base case: n = 0
+
+
+
+
+def B : ℕ → ℕ → ℕ
+   example (n : Nat) (h : n ≤ 0) : n = 0 := by
+     induction n with
+     | zero =>
+       -- Base case: n = 0
+       exact rfl  -- `rfl` proves `n = n`
