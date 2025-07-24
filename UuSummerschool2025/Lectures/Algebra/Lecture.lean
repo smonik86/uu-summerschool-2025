@@ -3,8 +3,11 @@ Copyright (c) 2025 Christian Merten. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Christian Merten
 -/
-import Mathlib
-
+import UuSummerschool2025.Lectures.Analysis.Lecture
+import Mathlib.Tactic.Ring
+import Mathlib.Data.Real.Basic
+import Mathlib.Data.Complex.Trigonometric
+import Mathlib.Data.Nat.Cast.Field/-!
 /-!
 # Algebraic structures and typeclasses
 

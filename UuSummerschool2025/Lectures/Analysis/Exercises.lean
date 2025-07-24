@@ -4,43 +4,63 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Christian Merten
 -/
 import UuSummerschool2025.Lectures.Analysis.Lecture
-
-/-!
+import Mathlib.Tactic.Ring
+import Mathlib.Data.Real.Basic
+import Mathlib.Data.Complex.Trigonometric
+import Mathlib.Data.Nat.Cast.Field/-!
 # Exercises for real analysis and linear arithmetic
 
 Try to fill in the following `sorry`s.
 -/
 
 example : ∃ (x : ℝ), x + 37 = 42 := by
-  sorry
+use 5
+ring
 
 -- Try to prove this only using `rw`, possibly useful lemmas:
 -- `pow_two`, `mul_sub`, `add_mul`, `add_sub`, `sub_sub`, `add_zero`
 -- Then rewrite the proof using `calc`.
 example (a b : ℝ) : (a + b) * (a - b) = a ^ 2 - b ^ 2 := by
-  sorry
+rw[sq, sq]
+repeat rw[mul_sub]
+repeat rw[add_mul]
+ring
 
 example {a b c d : ℝ} (hyp : c = d * a + b) (hyp' : b = a * d) : c = 2 * a * d := by
-  sorry
+ rw[<-mul_comm] at hyp
+ rw[hyp]
+ rw[hyp']
+ ring
 
 -- Use `apply?` to search for useful lemmas.
-example (a b : ℝ) : min a b = min b a := by
+example (a b : ℝ)  : min a b = min b a := by
   -- Hint: By `le_antisymm`, it suffices to show `LHS ≤ RHS` and `RHS ≤ LHS`.
   apply le_antisymm
-  · sorry
-  · sorry
+  obtain(h|h) := le_or_gt 0 b 
+  by_cases h' : a ≤ b
+  
+  
+
+
 
 example (a b : ℝ) : max a b = max b a := by
-  sorry
+  -- Hint: By `le_antisymm`, it suffices to show `LHS ≤ RHS` and `RHS ≤ LHS`.
+  apply le_antisymm
+  apply max_le_left
+  apply max_le_right
+
+example (a b c : ℝ) : min (max a b) c = max (min a c) (min b c) := by
+  apply le_antisymm
+  apply min_le_max
 
 example (a b c : ℝ) : min (min a b) c = min a (min b c) := by
   sorry
 
 -- Hint for the next one:
-#check abs_le'
+#check abs_le
 
 example (a b : ℝ) : |a * b| ≤ (a ^ 2 + b ^ 2) / 2 := by
-  sorry
+  apply abs_le
 
 -- Hint: use `abs_add` and `add_sub_cancel_right`
 example (a b : ℝ) : |a| - |b| ≤ |a - b| :=
@@ -87,7 +107,7 @@ Which of the sides is true? Your proof *must* start with `left` or `right`.
 Hint: Use `simp` to simplify logical statements.
 -/
 example : (∀ n, (n / 2) * 2 = n) ∨ ¬ (∀ n, (n / 2) * 2 = n) := by
-  sorry
+left
 
 /-
 Which of the sides is true? Your proof *must* start with `left` or `right`.

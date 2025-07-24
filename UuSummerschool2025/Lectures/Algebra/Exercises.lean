@@ -3,7 +3,11 @@ Copyright (c) 2025 Christian Merten. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Christian Merten
 -/
-import Mathlib
+import UuSummerschool2025.Lectures.Analysis.Lecture
+import Mathlib.Tactic.Ring
+import Mathlib.Data.Real.Basic
+import Mathlib.Data.Complex.Trigonometric
+import Mathlib.Data.Nat.Cast.Field
 
 /-!
 # Exercises for algebraic structures and typeclasses
@@ -19,9 +23,17 @@ def Rel (x y : ℕ × ℕ) : Prop :=
   x.1 + y.2 = y.1 + x.2
 
 lemma Rel.equivalence : Equivalence Rel where
-  refl := sorry
-  symm := sorry
-  trans := sorry
+  refl := by simp[Rel]
+  symm := by
+   dsimp[Rel] at *
+   intro x y h
+   rw[h]
+
+  trans := by
+   dsimp[Rel] at *
+   ring
+
+
 
 instance setoid : Setoid (ℕ × ℕ) where
   r := Rel
@@ -47,7 +59,7 @@ def Nat.asInt (n : ℕ) : Int :=
 
 lemma Nat.asInt_injective : Function.Injective Nat.asInt := by
   -- Hint: use `Quotient.eq`
-  sorry
+  Quotient.eq(fun x y 
 
 /-- Addition on the integers. -/
 def Int.add : Int → Int → Int := by
@@ -73,7 +85,8 @@ instance : Zero Int where
   zero := Nat.asInt 0
 
 instance : AddMonoid Int where
-  add_assoc := sorry
+  add_assoc := by
+  (x + y) + z = x + (y + z)
   zero_add := sorry
   add_zero := sorry
   nsmul := nsmulRec
