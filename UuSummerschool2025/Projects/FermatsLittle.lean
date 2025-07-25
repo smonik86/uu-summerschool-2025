@@ -85,6 +85,8 @@ theorem binomial_theorem_nat (x y : ℕ) :  ∀ n : ℕ, (x + y)^n = ∑ k ∈ I
          rhs
          rw[tsub_add_eq_tsub_tsub]
          rhs
+        sorry
+      sorry
 
 
 
