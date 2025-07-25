@@ -38,7 +38,7 @@ theorem binomial_theorem_nat (x y : ℕ) :  ∀ n : ℕ, (x + y)^n = ∑ k ∈ I
       rhs
       simp[mul_assoc]
     simp_rw[←pow_succ]
-    have : ∑ x_1 ∈ Ico 0 (k + 1), k.choose x_1 * x ^ (x_1 + 1) * y ^ (k - x_1)   =
+    have : ∑ x_1 ∈ Ico 0 (k + 1),  x ^ (x_1 + 1) * y ^ (k - x_1)*k.choose x_1    =
       ∑ x_1 ∈ Ico 1 (k + 2), k.choose (x_1 - 1) * x ^ x_1 * y ^ (k + 1 - x_1) := by
       apply Finset.sum_bij (ι := ℕ) (icoFun k)
       · unfold icoFun
@@ -56,6 +56,53 @@ theorem binomial_theorem_nat (x y : ℕ) :  ∀ n : ℕ, (x + y)^n = ∑ k ∈ I
       · unfold icoFun
         intro x hx
         simp_all
+        ring
+
+    have : ∑ x_1 ∈ Ico 0 (k + 1), k.choose x_1* x ^ (x_1) * y ^ (k - x_1)*y    =
+      ∑ x_1 ∈ Ico 1 (k + 2), k.choose (x_1 - 1) * x ^ (x_1 - 1) * y ^ (k - x_1 + 2) := by
+      apply Finset.sum_bij (ι := ℕ) (icoFun k)
+      · unfold icoFun
+        intro x hx
+        simp_all
+      · unfold icoFun
+        simp
+      · unfold icoFun
+        simp
+        intro x hx
+        intro d
+        use x - 1
+        simp_all
+        omega
+      · unfold icoFun
+        intro x hx
+        simp_all
+        rw[mul_assoc]
+        rw[←pow_succ]
+        have : (k - x - 1 + 2 : ℤ) = k - x + 1 := by
+          omega
+        conv =>
+         rhs
+         rhs
+         rw[tsub_add_eq_tsub_tsub]
+         rhs
+
+
+
+
+
+
+
+         sorry
+     rfl
+
+        nth_rewrite 3[←add_assoc]
+
+
+
+
+
+
+
         /-conv =>
           lhs
           rw[mul_comm]
@@ -64,10 +111,9 @@ theorem binomial_theorem_nat (x y : ℕ) :  ∀ n : ℕ, (x + y)^n = ∑ k ∈ I
           rw[mul_comm]
           rw[mul_assoc]
           simp[←pow_succ]-/
-    ring_nf
-    rw[←pow_succ]
-    simp_rw[this]
 
+    simp at this
+    simp_rw[this]
 
 
     #check Nat.choose_succ_right
