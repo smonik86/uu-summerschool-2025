@@ -1,7 +1,6 @@
 import Mathlib
 open Finset
 def B (n : ℕ) (x y : ℕ) := (x + y)^n
-<<<<<<< HEAD
 
 def icoFun (k : ℕ) (x : ℕ) (hx : x ∈ Ico 0 (k + 1)) : ℕ :=  x+1
 /-
@@ -10,8 +9,6 @@ lemma icoFun_bijective (k : ℕ) : Function.Bijective (icoFun k) := by
 
   sorry-/
 
-=======
->>>>>>> d90d5c394ffc73581c1d45f1e0525c77f911d322
 theorem binomial_theorem_nat (x y : ℕ) :  ∀ n : ℕ, (x + y)^n = ∑ k ∈ Ico 0 (n + 1), Nat.choose n k * x^k * y^(n - k) := by
   intro n
   induction n
@@ -25,7 +22,6 @@ theorem binomial_theorem_nat (x y : ℕ) :  ∀ n : ℕ, (x + y)^n = ∑ k ∈ I
     simp_rw[Nat.mul_add]
     rw[Finset.sum_add_distrib]
     simp
-<<<<<<< HEAD
     conv =>
       lhs
       lhs
@@ -69,6 +65,7 @@ theorem binomial_theorem_nat (x y : ℕ) :  ∀ n : ℕ, (x + y)^n = ∑ k ∈ I
           rw[mul_assoc]
           simp[←pow_succ]-/
     ring_nf
+    rw[←pow_succ]
     simp_rw[this]
 
 
@@ -76,29 +73,3 @@ theorem binomial_theorem_nat (x y : ℕ) :  ∀ n : ℕ, (x + y)^n = ∑ k ∈ I
     #check Nat.choose_succ_right
     simp_rw [←Nat.choose_succ_right] -- pascal's identity
     nth_rewrite 4[Nat.choose_succ_succ]
-=======
-    rw[Finset.sum_range_succ]
-    simp
-    rw [pow_add, ih]
-    rw[]
-
-
-    sorry
-
-
-
-
-
-
-
-
-
---  | .zero =>
-    -- base case: n = 0
- --   simp only [pow_zero, range_one, Nat.choose_zero_right, pow_zero, mul_one, mul_one, sum_singleton]
-  --| succ d hd =>
-    -- inductive step: assume true for d, prove for d + 1
-  --  rw [pow_succ, hd]
-   -- rw [mul_sum]
-   -- rw [← sum_range_succ']
->>>>>>> d90d5c394ffc73581c1d45f1e0525c77f911d322
